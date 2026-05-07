@@ -38,6 +38,16 @@ for d in "${NUXT_DIRS[@]}"; do
   fi
 done
 
+# Top-level files in ranch's reins admin slice (e.g. pages.ts route name constants).
+# Skip nuxt.config.ts (reins ships its own) and pages.ts is the only known top-level file.
+if [ -f "$RANCH_PATH/admin/slices/reins/pages.ts" ]; then
+  echo "  copy admin/slices/reins/pages.ts"
+  cp "$RANCH_PATH/admin/slices/reins/pages.ts" "$REINS_ROOT/nuxt/pages.ts"
+fi
+
+# Remove empty leftover locales/ dir (i18n content lives in i18n/locales/).
+rm -rf "$REINS_ROOT/nuxt/locales"
+
 # Settings page lives in ranch's setting slice; cherry-pick it.
 echo "  copy admin/slices/setting/pages/settings/knowledge.vue"
 mkdir -p "$REINS_ROOT/nuxt/pages/settings"
