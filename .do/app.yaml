@@ -1,0 +1,27 @@
+name: reins-docs
+region: fra
+features:
+  - buildpack-stack=ubuntu-22
+
+static_sites:
+  - name: docs
+    github:
+      repo: CleanSlice/reins
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    build_command: cd docs && npm ci && npm run build
+    output_dir: docs/docs/.vitepress/dist
+    catchall_document: index.html
+    error_document: 404.html
+    index_document: index.html
+    environment_slug: node-js
+    envs:
+      - key: NODE_VERSION
+        scope: BUILD_TIME
+        value: "20"
+
+domains:
+  - domain: reins.cleanslice.org
+    type: PRIMARY
+    zone: cleanslice.org

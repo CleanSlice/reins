@@ -90,6 +90,37 @@ Phase 1 (this release): NestJS slice + Nuxt layer + core docs. Manual restart re
 
 Phase 2 (planned): auto-sync of credential settings into the LightRAG container env, removing the manual restart step.
 
+## Deploy docs to DigitalOcean
+
+The `docs/` site is published to [reins.cleanslice.org](https://reins.cleanslice.org) via DigitalOcean App Platform as a Static Site (free tier, CDN, auto SSL). The App Spec is checked in at [.do/app.yaml](./.do/app.yaml).
+
+### First-time setup
+
+```bash
+# install doctl: brew install doctl, then `doctl auth init`
+doctl apps create --spec .do/app.yaml
+```
+
+Then in the DO control panel, link your GitHub account to the app (one-time OAuth) so `deploy_on_push: true` triggers builds on every push to `main`.
+
+### DNS
+
+Point `reins` at the app:
+
+- Get the app's default hostname (`<slug>.ondigitalocean.app`) from the DO console.
+- In the `cleanslice.org` DNS zone, add a `CNAME reins -> <slug>.ondigitalocean.app.` (or move the zone to DO with `NS` records — the App Spec already declares `zone: cleanslice.org`).
+- DO issues a Let's Encrypt cert automatically once DNS resolves.
+
+### Updating the spec
+
+After editing `.do/app.yaml`:
+
+```bash
+doctl apps update <app-id> --spec .do/app.yaml
+```
+
+Get the app id via `doctl apps list`.
+
 ## License
 
 TBD by CleanSlice.
